@@ -29,7 +29,7 @@ public class ActivitiController {
         Map<String, Object> map = new HashMap<String, Object>();
         //在holiday.bpmn中,填写请假单的任务办理人为动态传入的userId,此处模拟一个id
         map.put("userId", 2);
-    	ProcessInstance instance = runtimeService.startProcessInstanceByKey("Process_1mr4ugq",map);
+    	ProcessInstance instance = runtimeService.startProcessInstanceByKey("kyrsapplication",map);
 		return instance;
     }
 

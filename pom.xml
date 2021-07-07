@@ -65,12 +65,19 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.2.6</version>
         </dependency>
-        <!-- activiti7 -->
+        <!-- activiti7 M5会有问题-->
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring-boot-starter</artifactId>
             <version>7.1.0.M6</version>
         </dependency>
+        <dependency>
+            <groupId>org.activiti.dependencies</groupId>
+            <artifactId>activiti-dependencies</artifactId>
+            <version>7.1.0.M6</version>
+            <type>pom</type>
+        </dependency>
+
         <!-- token -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

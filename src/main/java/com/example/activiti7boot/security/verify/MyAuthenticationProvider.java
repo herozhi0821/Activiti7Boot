@@ -43,11 +43,9 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
     SysUserService sysUserService;
     @Autowired
     SysRoleService roleService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
     
     /**
      * 去除密码验证并授权
@@ -82,7 +80,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
         grantedAuthorities.add(new SimpleGrantedAuthority(role.getRoleCode()));//角色必须以`ROLE_`开头
         UserDetails user = new User(sysuser.getUserName(),sysuser.getPassWord(),grantedAuthorities);
         
-        if (!passwordEncoder().matches(password, user.getPassword())) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
         	logger.error("登录用户密码错误！");
             throw new DisabledException("您输入的密码有误！");
         }

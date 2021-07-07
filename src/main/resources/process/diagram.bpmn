@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0npic5p" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="8.7.1">
+  <bpmn:process id="Process_1mr4ugq" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_0z1ep6a" name="开始">
+      <bpmn:outgoing>Flow_00icxbx</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_08o40iu" name="成功">
+      <bpmn:incoming>Flow_0yyk1c2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Activity_0cfnu1g" name="部门经理审批">
+      <bpmn:incoming>Flow_00icxbx</bpmn:incoming>
+      <bpmn:outgoing>Flow_1p7967o</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1pv7khu" name="总经理审批">
+      <bpmn:incoming>Flow_1p7967o</bpmn:incoming>
+      <bpmn:outgoing>Flow_0yyk1c2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1p7967o" sourceRef="Activity_0cfnu1g" targetRef="Activity_1pv7khu" />
+    <bpmn:sequenceFlow id="Flow_0yyk1c2" sourceRef="Activity_1pv7khu" targetRef="Event_08o40iu" />
+    <bpmn:sequenceFlow id="Flow_00icxbx" sourceRef="StartEvent_0z1ep6a" targetRef="Activity_0cfnu1g" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1mr4ugq">
+      <bpmndi:BPMNEdge id="Flow_1p7967o_di" bpmnElement="Flow_1p7967o">
+        <di:waypoint x="370" y="110" />
+        <di:waypoint x="450" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yyk1c2_di" bpmnElement="Flow_0yyk1c2">
+        <di:waypoint x="550" y="110" />
+        <di:waypoint x="632" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00icxbx_di" bpmnElement="Flow_00icxbx">
+        <di:waypoint x="188" y="110" />
+        <di:waypoint x="270" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0cfnu1g_di" bpmnElement="Activity_0cfnu1g">
+        <dc:Bounds x="270" y="70" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_0z1ep6a">
+        <dc:Bounds x="152" y="92" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="159" y="135" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1pv7khu_di" bpmnElement="Activity_1pv7khu">
+        <dc:Bounds x="450" y="70" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_08o40iu_di" bpmnElement="Event_08o40iu">
+        <dc:Bounds x="632" y="92" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="640" y="135" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

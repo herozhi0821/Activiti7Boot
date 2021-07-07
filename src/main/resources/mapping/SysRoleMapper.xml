@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.activiti7boot.modules.dao.SysRoleMapper">
+  <resultMap id="BaseResultMap" type="com.example.activiti7boot.modules.bean.SysRole">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="role_code" jdbcType="VARCHAR" property="roleCode" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, role_code, role_name, remarks
+  </sql>
+  
+   <!-- 得到用户权限信息 -->
+  <select id="getSysRole" parameterType="java.lang.String" resultType="com.example.activiti7boot.modules.bean.SysRole">
+   select  id id, role_code roleCode, role_name roleName from sys_role where id = 
+   (select role_id from sys_user where user_name = #{userName} )
+   </select>
+  
+  <select id="getRoleById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+     from sys_role where id = #{id}
+  </select>
+  
+</mapper>

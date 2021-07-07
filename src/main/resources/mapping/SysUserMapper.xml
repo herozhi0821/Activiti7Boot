@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.activiti7boot.modules.dao.SysUserMapper">
+    <resultMap id="BaseResultMap" type="com.example.activiti7boot.modules.bean.SysUser">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="pass_word" jdbcType="VARCHAR" property="passWord"/>
+        <result column="company" jdbcType="VARCHAR" property="company"/>
+        <result column="user_status" jdbcType="INTEGER" property="userStatus"/>
+        <result column="upload_amount" jdbcType="INTEGER" property="uploadAmount"/>
+        <result column="upload_residue" jdbcType="INTEGER" property="uploadResidue"/>
+        <result column="upload_fail" jdbcType="INTEGER" property="uploadFail"/>
+        <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber"/>
+        <result column="e_mail" jdbcType="VARCHAR" property="eMail"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="role_id" jdbcType="INTEGER" property="roleId"/>
+        <result column="forbidden_time" jdbcType="TIMESTAMP" property="forbiddenTime"/>
+        <result column="cnki_name" jdbcType="VARCHAR" property="cnkiName"/>
+        <result column="student_num" jdbcType="VARCHAR" property="studentNum"/>
+        <result column="college" jdbcType="VARCHAR" property="college"/>
+        <result column="major" jdbcType="VARCHAR" property="major"/>
+        <result column="degree" jdbcType="VARCHAR" property="degree"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="doc_ids" jdbcType="INTEGER" property="docIds"/>
+        <result column="ident_photo" jdbcType="LONGVARBINARY" property="identPhoto"/>
+        <result column="remarks" jdbcType="VARCHAR" property="remarks"/>
+        <result column="sign" jdbcType="VARCHAR" property="sign"/>
+        <result column="pic_path" jdbcType="VARCHAR" property="picPath"/>
+    </resultMap>
+
+    <resultMap id="partResultMap1" type="java.util.HashMap">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="user_status" jdbcType="INTEGER" property="userStatus"/>
+        <result column="upload_amount" jdbcType="INTEGER" property="uploadAmount"/>
+        <result column="upload_residue" jdbcType="INTEGER" property="uploadResidue"/>
+        <result column="upload_fail" jdbcType="INTEGER" property="uploadFail"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="student_num" jdbcType="VARCHAR" property="studentNum"/>
+        <result column="college" jdbcType="VARCHAR" property="college"/>
+        <result column="major" jdbcType="VARCHAR" property="major"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, user_name, pass_word, company, user_status, upload_amount, upload_residue, upload_fail, phone_number,
+        e_mail, create_time, role_id,forbidden_time,cnki_name, student_num, college, major, degree,
+        real_name,doc_ids,ident_photo,remarks,sign,pic_path
+    </sql>
+
+    <update id="updatePwdByPhone" parameterType="String">
+        update sys_user
+        set pass_word = #{passWord,jdbcType=VARCHAR}
+        where user_name = #{userName,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateDocsByPhone" parameterType="String">
+        update sys_user
+        set doc_ids = #{docIds,jdbcType=INTEGER}
+        where user_name = #{userName,jdbcType=VARCHAR}
+    </update>
+
+    <!-- 根据docId获取用户信息 -->
+    <select id="getUserByDocId" parameterType="java.lang.String"
+            resultType="com.example.activiti7boot.modules.bean.SysUser">
+        SELECT
+        upload_residue uploadResidue,
+        upload_fail uploadFail,
+        id id
+        FROM
+        sys_user
+        WHERE
+        user_name =
+        ( SELECT upload_by
+        FROM document where upload_by = #{id}
+        )
+    </select>
+    <update id="updateSysUserById" parameterType="com.example.activiti7boot.modules.bean.SysUser">
+        update sys_user
+        <set>
+            <if test="userStatus != null">
+                user_status = #{userStatus,jdbcType=INTEGER},
+            </if>
+            <if test="uploadResidue != null">
+                upload_residue = #{uploadResidue,jdbcType=INTEGER},
+            </if>
+            <if test="uploadFail != null">
+                upload_fail = #{uploadFail,jdbcType=INTEGER},
+            </if>
+            <if test="sign != null">
+                sign = #{sign,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="getCheckUsers" parameterType="Integer" resultType="java.lang.Integer">
+        SELECT DISTINCT
+        u.doc_ids
+        FROM
+        sys_user u
+        WHERE
+        u.role_id = #{roleId,jdbcType=INTEGER}
+    </select>
+
+    <select id="getRoleId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select role_id from sys_user where user_name = #{userName}
+    </select>
+
+    <select id="selectByUserName" parameterType="String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM sys_user
+        <where>
+            user_name = #{userName,jdbcType=VARCHAR}
+        </where>
+    </select>
+
+    <select id="getCommonUsersOfSchool" parameterType="com.example.activiti7boot.modules.bean.SysUser" resultMap="partResultMap1">
+        SELECT
+        id,real_name user_name,student_num,major,college,user_status,upload_amount,upload_residue,upload_fail,create_time
+        FROM sys_user
+        WHERE
+        role_id=5
+        <if test="userName!=null">
+            AND user_name LIKE CONCAT('%/',#{userName},'%') ESCAPE '/'
+        </if>
+        <if test="studentNum!=null">
+            AND student_num=#{studentNum,jdbcType=VARCHAR}
+        </if>
+        <if test="major!=null">
+            AND major LIKE CONCAT('%/',#{major},'%') ESCAPE '/'
+        </if>
+        <if test="college!=null">
+            AND college LIKE CONCAT('%/',#{college},'%') ESCAPE '/'
+        </if>
+        <if test="userStatus!=null">
+            AND user_status=#{userStatus,jdbcType=INTEGER}
+        </if>
+        <if test="createTime!=null">
+            AND DATE_FORMAT(create_time,'%Y-%m-%d')=DATE_FORMAT(#{createTime,jdbcType=TIMESTAMP},'%Y-%m-%d')
+        </if>
+    </select>
+
+    <update id="updateIdentPhotoByUserName">
+        update sys_user
+        set ident_photo = #{identPhoto,jdbcType=LONGVARBINARY}
+        where user_name = #{userName,jdbcType=VARCHAR}
+    </update>
+    <update id="updatePicPathByUserName">
+        update sys_user
+        set pic_path = #{picPath,jdbcType=VARCHAR}
+        where user_name = #{userName,jdbcType=VARCHAR}
+    </update>
+    <insert id="batchInsert" parameterType="com.example.activiti7boot.modules.bean.SysUser">
+        insert IGNORE sys_user (id, user_name, pass_word,
+        company, user_status, upload_amount,
+        upload_residue, upload_fail, phone_number,
+        e_mail, create_time, role_id,
+        doc_ids, forbidden_time, cnki_name,
+        student_num, college, major,
+        degree, real_name, remarks,
+        ident_photo,sign,pic_path)
+        values (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{passWord,jdbcType=VARCHAR},
+        #{company,jdbcType=VARCHAR}, -2, #{uploadAmount,jdbcType=INTEGER},
+        #{uploadResidue,jdbcType=INTEGER}, 0, #{phoneNumber,jdbcType=VARCHAR},
+        #{eMail,jdbcType=VARCHAR}, now(), 5,
+        #{docIds,jdbcType=INTEGER}, #{forbiddenTime,jdbcType=TIMESTAMP}, #{cnkiName,jdbcType=VARCHAR},
+        #{studentNum,jdbcType=VARCHAR}, #{college,jdbcType=VARCHAR}, #{major,jdbcType=VARCHAR},
+        #{degree,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR},
+        #{identPhoto,jdbcType=LONGVARBINARY}, #{sign,jdbcType=VARCHAR}, #{picPath,jdbcType=VARCHAR})
+    </insert>
+
+</mapper>

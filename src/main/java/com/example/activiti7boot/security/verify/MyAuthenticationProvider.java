@@ -75,11 +75,7 @@ public class MyAuthenticationProvider implements AuthenticationProvider {
         	logger.error("登录用户"+username+"不存在！");
             throw new UsernameNotFoundException("用户名有误！");//登录用户不存在！
         }
-        if (sysuser.getUserStatus() == -2){
-        	logger.error("登录用户["+username+"]已导入未注册！");
-            throw new UsernameNotFoundException("请注册后登录！");
-        }
-        username = sysuser.getUserName();
+
         //2、获取用户的角色
         SysRole role = roleService.getRolesByUserId(sysuser.getRoleId());
         ArrayList<GrantedAuthority> grantedAuthorities = new ArrayList<>();

@@ -30,10 +30,10 @@ public class ActivitiController {
     //------------------------------------------------------部署流程实例-------------------------------------------------------------
     // bpmn文件部署方式
     @RequestMapping("initsProces")
-    public Object initsProces() {
+    public Object initsProces(String processName) {
         Deployment deployment = repositoryService.createDeployment()
-                .addClasspathResource("processes/MyProcess.bpmn")
-                .addClasspathResource("processes/MyProcess.png")
+                .addClasspathResource("processes/"+processName+".bpmn")
+                .addClasspathResource("processes/"+processName+".png")
                 .name("测试diagram").deploy();
         return deployment;
     }
@@ -48,15 +48,21 @@ public class ActivitiController {
     //-------------------------------------------------------------------启动流程实例------------------------------------------------------------
     //启动流程实例
     @RequestMapping("startProcess")
-    public Object startProcess() {
+    public Object startProcess(String process) {
         //在bpmn中
         HashMap<String, Object> map = new HashMap<String, Object>();
-        map.put("reason", "测试请假");
-        map.put("days", 2);
-        map.put("time", new Date());
+        map.put("userId", "测试请假");
+//        map.put("days", 2);
+//        map.put("time", new Date());
 
-    	ProcessInstance instance = runtimeService.startProcessInstanceByKey("myProcess");
-		return instance;
+        //Activiti 流程查询出的结果封装为 JSON 时出现的异常
+    	ProcessInstance processDefinition = runtimeService.startProcessInstanceByKey(process,map);
+    	 Map<String, Object> pdMap = new HashMap<>();
+         pdMap.put("id", processDefinition.getId());
+         pdMap.put("key", processDefinition.getProcessDefinitionKey());
+         pdMap.put("name", processDefinition.getName());
+         pdMap.put("deploymentId", processDefinition.getDeploymentId());
+		return processDefinition;
     }
 
     //根据流程定义ID查询流程实例
@@ -80,7 +86,7 @@ public class ActivitiController {
     }
 
     //根据流程实例ID查询流程实例
-    @RequestMapping("processID")
+    @RequestMapping("searchByID")
     public Object searchByID(String processID){
         try {
             ProcessInstance pi = runtimeService.createProcessInstanceQuery()
